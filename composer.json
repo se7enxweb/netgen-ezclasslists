@@ -1,18 +1,47 @@
 {
-    "name": "netgen/ezclasslists",
-    "description": "Adds a tab in the administration interface that lists objects by content class and lets you quickly edit or delete them.",
+    "name": "se7enxweb/netgen-ezclasslists",
+    "description": "Lists by class for Exponential: an administration tab that lists objects by content class, filtered by subtree, dates and owner, and lets you quickly edit or delete them.",
     "type": "ezpublish-legacy-extension",
+    "keywords": [
+        "exponential",
+        "exponential-legacy",
+        "ezpublish-legacy",
+        "extension",
+        "content class",
+        "list",
+        "admin",
+        "bulk delete"
+    ],
+    "homepage": "https://github.com/se7enxweb/netgen-ezclasslists",
+    "support": {
+        "issues": "https://github.com/se7enxweb/netgen-ezclasslists/issues",
+        "source": "https://github.com/se7enxweb/netgen-ezclasslists"
+    },
     "license": "GPL-2.0-only",
     "authors": [
         {
             "name": "Damien Pobel",
-            "homepage": "https://damien.pobel.fr"
+            "homepage": "https://damien.pobel.fr",
+            "role": "Author"
+        },
+        {
+            "name": "Netgen",
+            "homepage": "https://netgen.io",
+            "role": "Developer"
+        },
+        {
+            "name": "7x",
+            "email": "info@se7enx.com",
+            "homepage": "https://se7enx.com",
+            "role": "Maintainer"
         }
     ],
     "require": {
-        "ezsystems/ezpublish-legacy-installer": "^2.0.4"
+        "php": ">=8.0",
+        "se7enxweb/exponential-legacy-installer": "*"
     },
     "extra": {
-        "ezpublish-legacy-extension-name": "ezclasslists"
+        "ezpublish-legacy-extension-name": "ezclasslists",
+        "installer-name": "ezclasslists"
     }
 }

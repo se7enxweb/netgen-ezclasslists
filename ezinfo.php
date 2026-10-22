@@ -5,9 +5,8 @@
 //
 // Created on: <30-May-2009 16:57 damien pobel>
 //
-// SOFTWARE NAME: eZ Class Lists
-// SOFTWARE RELEASE: 1.2
-// COPYRIGHT NOTICE: Copyright (C) 1999-2011 Damien POBEL
+// SOFTWARE NAME: Lists by class (ezclasslists)
+// COPYRIGHT NOTICE: Copyright (C) 1999-2011 Damien POBEL, 1998-2026 7x
 // SOFTWARE LICENSE: GNU General Public License v2.0
 // NOTICE: >
 //   This program is free software; you can redistribute it and/or
@@ -26,13 +25,15 @@
 
 class ezclasslistsInfo
 {
-    static function info()
+    public static function info()
     {
-        return array( 'Name' => "<a href=\"http://projects.ez.no/ezclasslists\">eZ Class lists</a> extension",
-                      'Version' => "1.2",
-                      'Copyright' => "Copyright (C) 1999-2011 Damien POBEL",
-                      'License' => "GNU General Public License v2.0"
-                      );
+        return array(
+            'Name'      => '<a href="https://github.com/se7enxweb/netgen-ezclasslists">Lists by class</a> (ezclasslists)',
+            'Version'   => '2.1.0',
+            'Author'    => 'Damien Pobel, Netgen and 7x',
+            'Copyright' => 'Copyright &copy; 1999 - 2011 Damien Pobel and 1998 - ' . date( 'Y' ) . ' 7x',
+            'License'   => 'GNU General Public License v2.0',
+            'Info_url'  => 'https://github.com/se7enxweb/netgen-ezclasslists'
+        );
     }
 }
-?>
