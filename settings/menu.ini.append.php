@@ -11,6 +11,9 @@ Part[classlists]=Lists by class
 Tabs[]=classlists
 
 [Topmenu_classlists]
+# Icon - the icon the admin4 design draws before the tab's name: a name of design.ini
+#        [AdminDesignSettings] IconList[] (Bootstrap Icons); older admin designs ignore it.
+Icon=list-ul
 NavigationPartIdentifier=classlists
 Name=Lists by class
 Tooltip=List object by content class
