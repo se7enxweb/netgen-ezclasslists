@@ -1,33 +1,38 @@
-// $Id: classlists.js 18 2011-06-22 19:53:59Z dpobel $
-// $HeadURL: http://svn.projects.ez.no/ezclasslists/tags/ezclasslists_1_2/ezclasslists/design/standard/javascript/classlists.js $
-// TODO: rewrite this !
+// Lists by class: the filter form of the left menu reloads only the list.
+// Plain JavaScript (fetch), no YUI. jQuery UI's date picker is used when the
+// administration has loaded it; without it the dates are typed as YYYY-MM-DD.
 var CLASSLISTS_MAIN_CONTENT_ID = 'ezclasslists-main-content';
+var CLASSLISTS_DATE_FIELDS = [ 'createdDateFrom', 'createdDateTo', 'modifiedDateFrom', 'modifiedDateTo' ];
 
 function classListsFilter( e, options )
 {
-    var baseURL = options.baseURL;
-    var imgLoader = options.loader;
-    if ( !YAHOO.util.Connect.asyncRequest )
+    var content = document.getElementById( CLASSLISTS_MAIN_CONTENT_ID );
+    if ( !content || typeof window.fetch !== 'function' || typeof window.URLSearchParams !== 'function' )
     {
+        // The form is posted and the page reloads.
         return true;
     }
-    var callback = { success: function( o )
-                              {
-                                  var content = document.getElementById( CLASSLISTS_MAIN_CONTENT_ID );
-                                  if ( !content )
-                                  {
-                                      return;
-                                  }
-                                  content.innerHTML = o.responseText;
-                              }
-                   };
+    e.preventDefault();
 
-    classListsWait( imgLoader );
+    classListsWait( options.loader );
 
-    data = buildPostData();
-    var transaction = YAHOO.util.Connect.asyncRequest( 'POST', baseURL, callback, data );
-
-    YAHOO.util.Event.preventDefault( e );
+    window.fetch( options.baseURL, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: buildPostData( e.target )
+    } ).then( function( response ) {
+        return response.text();
+    } ).then( function( html ) {
+        content.innerHTML = html;
+    } ).catch( function() {
+        // Fall back to a normal post of the form.
+        e.target.submit();
+    } );
+    return false;
 }
 
 function classListsWait( imgLoader )
@@ -37,56 +42,74 @@ function classListsWait( imgLoader )
     {
         return;
     }
-    content.innerHTML = '<p style="text-align:center;padding-top:4em;"><img src="' + imgLoader + '" alt="Loading..." /></p>';
+    var p = document.createElement( 'p' );
+    p.className = 'classlists-loader';
+    var img = document.createElement( 'img' );
+    img.src = imgLoader;
+    img.alt = 'Loading...';
+    p.appendChild( img );
+    content.innerHTML = '';
+    content.appendChild( p );
 }
 
-function buildPostData()
+function classListsDateValue( id )
 {
-    var data = {};
+    var input = document.getElementById( id );
+    if ( !input )
+    {
+        return null;
+    }
+    if ( typeof jQuery !== 'undefined' && jQuery.fn && jQuery.fn.datepicker && jQuery.datepicker )
+    {
+        var date = jQuery( input ).datepicker( 'getDate' );
+        return date !== null ? jQuery.datepicker.formatDate( 'yy-mm-dd', date ) : null;
+    }
+    var value = input.value.trim();
+    return /^\d{4}-\d{2}-\d{2}$/.test( value ) ? value : null;
+}
 
-    data.classIdentifier = classListsGetSelectValue( 'classIdentifier' );
-    data.sortMethod = classListsGetSelectValue( 'sortMethod' );
-    data.sortOrder  = classListsGetSelectValue( 'sortOrder' );
+function buildPostData( form )
+{
+    var data = new URLSearchParams();
 
-    var createdDateFrom = $('#createdDateFrom').datepicker('getDate');
-    if (createdDateFrom !== null) {
-        data.createdDateFrom = $.datepicker.formatDate('yy-mm-dd', createdDateFrom);
+    data.append( 'classIdentifier', classListsGetSelectValue( 'classIdentifier' ) );
+    data.append( 'sortMethod', classListsGetSelectValue( 'sortMethod' ) );
+    data.append( 'sortOrder', classListsGetSelectValue( 'sortOrder' ) );
+
+    CLASSLISTS_DATE_FIELDS.forEach( function( id ) {
+        var value = classListsDateValue( id );
+        if ( value !== null )
+        {
+            data.append( id, value );
+        }
+    } );
+
+    var rootNode = document.getElementById( 'rootNodeId' );
+    data.append( 'rootNodeId', rootNode && rootNode.value !== '' ? rootNode.value : 1 );
+
+    var owner = document.getElementById( 'ownerUser' );
+    data.append( 'ownerId', owner ? owner.value : 0 );
+
+    // The form token (ezformtoken) of the form, if it has one.
+    if ( form && form.querySelectorAll )
+    {
+        Array.prototype.forEach.call( form.querySelectorAll( 'input[type="hidden"]' ), function( input ) {
+            if ( input.name && input.name.toLowerCase().indexOf( 'token' ) !== -1 )
+            {
+                data.append( input.name, input.value );
+            }
+        } );
     }
 
-    var createdDateTo = $('#createdDateTo').datepicker('getDate');
-    if (createdDateTo !== null) {
-        data.createdDateTo = $.datepicker.formatDate('yy-mm-dd', createdDateTo);
-    }
+    data.append( 'ajax', 'true' );
 
-    var modifiedDateFrom = $('#modifiedDateFrom').datepicker('getDate');
-    if (modifiedDateFrom !== null) {
-        data.modifiedDateFrom = $.datepicker.formatDate('yy-mm-dd', modifiedDateFrom);
-    }
-
-    var modifiedDateTo = $('#modifiedDateTo').datepicker('getDate');
-    if (modifiedDateTo !== null) {
-        data.modifiedDateTo = $.datepicker.formatDate('yy-mm-dd', modifiedDateTo);
-    }
-
-    var rootNodeId = document.getElementById('rootNodeId').value;
-    data.rootNodeId = rootNodeId !== '' ? rootNodeId : 1;
-
-    data.ownerId = document.getElementById('ownerUser').value;
-
-    data.ajax = true;
-
-    var dataString = '';
-    $.each(data, function(index, value) {
-        dataString += '&'+index+'='+value;
-    });
-
-    return dataString.slice(1); // slice is to remove leading '&'
+    return data.toString();
 }
 
 function classListsGetSelectValue( selectID )
 {
     var element = document.getElementById( selectID );
-    if ( !element )
+    if ( !element || element.selectedIndex < 0 )
     {
         return '';
     }

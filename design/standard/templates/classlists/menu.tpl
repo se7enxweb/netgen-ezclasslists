@@ -93,16 +93,16 @@
     </select>
 
     <label for="createdDateFrom">{'Created since'|i18n( 'classlists/list' )}</label>
-    <input type="text" name="createdDateFrom" id="createdDateFrom" {if $view_parameters.createdDateFrom}value="{$view_parameters.createdDateFrom|datetime('custom', '%d/%m/%Y')}"{/if} />
+    <input type="text" name="createdDateFrom" id="createdDateFrom" placeholder="YYYY-MM-DD" autocomplete="off" {if $view_parameters.createdDateFrom}value="{$view_parameters.createdDateFrom|datetime('custom', '%Y-%m-%d')}"{/if} />
 
     <label for="createdDateTo">{'Created until'|i18n( 'classlists/list' )}</label>
-    <input type="text" name="createdDateTo" id="createdDateTo" {if $view_parameters.createdDateTo}value="{$view_parameters.createdDateTo|datetime('custom', '%d/%m/%Y')}"{/if} />
+    <input type="text" name="createdDateTo" id="createdDateTo" placeholder="YYYY-MM-DD" autocomplete="off" {if $view_parameters.createdDateTo}value="{$view_parameters.createdDateTo|datetime('custom', '%Y-%m-%d')}"{/if} />
 
     <label for="modifiedDateFrom">{'Modified since'|i18n( 'classlists/list' )}</label>
-    <input type="text" name="modifiedDateFrom" id="modifiedDateFrom" {if $view_parameters.modifiedDateFrom}value="{$view_parameters.modifiedDateFrom|datetime('custom', '%d/%m/%Y')}"{/if} />
+    <input type="text" name="modifiedDateFrom" id="modifiedDateFrom" placeholder="YYYY-MM-DD" autocomplete="off" {if $view_parameters.modifiedDateFrom}value="{$view_parameters.modifiedDateFrom|datetime('custom', '%Y-%m-%d')}"{/if} />
 
     <label for="modifiedDateTo">{'Modified until'|i18n( 'classlists/list' )}</label>
-    <input type="text" name="modifiedDateTo" id="modifiedDateTo" {if $view_parameters.modifiedDateTo}value="{$view_parameters.modifiedDateTo|datetime('custom', '%d/%m/%Y')}"{/if} />
+    <input type="text" name="modifiedDateTo" id="modifiedDateTo" placeholder="YYYY-MM-DD" autocomplete="off" {if $view_parameters.modifiedDateTo}value="{$view_parameters.modifiedDateTo|datetime('custom', '%Y-%m-%d')}"{/if} />
 
     {def $parent_node_ids = ezini( 'Users', 'UserGroupIds', 'lists.ini' )}
     {def $users = array()}
@@ -145,28 +145,27 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <script type="text/javascript">
-YUILoader.require(['utilities', 'event']);
-YUILoader.onSuccess = function() {ldelim}
-
+(function() {ldelim}
     var o = {ldelim} baseURL: {'classlists/list'|ezurl( 'single' )}, loader: {'loader.gif'|ezimage( 'single' )} {rdelim};
-    YAHOO.util.Event.addListener("class-list-menu-form", "submit", classListsFilter, o);
-
-{rdelim};
-YUILoader.insert({ldelim}{rdelim}, 'js');
-
+    var form = document.getElementById( 'class-list-menu-form' );
+    if ( form && typeof classListsFilter === 'function' )
+    {ldelim}
+        form.addEventListener( 'submit', function( e ) {ldelim} classListsFilter( e, o ); {rdelim} );
+    {rdelim}
+{rdelim})();
 {literal}
-
-$( function() {
-    $( "#createdDateFrom").datepicker();
-    $( "#createdDateTo").datepicker();
-    $( "#modifiedDateFrom").datepicker();
-    $( "#modifiedDateTo").datepicker();
-
-    $('.main-content').on("click",'#analysis-table-wrapper',function(){
-        $('#analysis-table').toggle();
-    });
-});
+if ( typeof jQuery !== 'undefined' )
+{
+    jQuery( function( $ ) {
+        if ( $.fn.datepicker )
+        {
+            $( '#createdDateFrom, #createdDateTo, #modifiedDateFrom, #modifiedDateTo' ).datepicker( { dateFormat: 'yy-mm-dd' } );
+        }
+        $( '.main-content' ).on( 'click', '#analysis-table-wrapper', function() {
+            $( '#analysis-table' ).toggle();
+        } );
+    } );
+}
 {/literal}
-
 </script>
 

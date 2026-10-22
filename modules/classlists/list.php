@@ -84,6 +84,28 @@ if ( $http->hasPostVariable('SelectedNodeIDArray' ) )
     $rootNodeId = $http->postVariable( 'SelectedNodeIDArray' )[0];
 }
 
+if ( !function_exists( 'classListsPostedDate' ) )
+{
+    /**
+     * A date of the filter form (YYYY-MM-DD) as the timestamp of that day's
+     * start, or null when the field is empty or not such a date.
+     */
+    function classListsPostedDate( $value )
+    {
+        $value = trim( (string)$value );
+        if ( $value === '' )
+        {
+            return null;
+        }
+        $date = DateTime::createFromFormat( '!Y-m-d', $value );
+        if ( $date === false || $date->format( 'Y-m-d' ) !== $value )
+        {
+            return null;
+        }
+        return $date->getTimestamp();
+    }
+}
+
 $createdDateFrom = null;
 if ( isset( $Params['createdDateFrom'] ) && $Params['createdDateFrom'] !== false )
 {
@@ -92,8 +114,7 @@ if ( isset( $Params['createdDateFrom'] ) && $Params['createdDateFrom'] !== false
 if ( $http->hasPostVariable( 'createdDateFrom' ) )
 {
     $createdDateFrom = $http->postVariable( 'createdDateFrom' );
-    $createdDateFrom = DateTime::createFromFormat('Y-m-d H:i', $createdDateFrom . ' 00:00');
-    $createdDateFrom = $createdDateFrom->getTimestamp();
+    $createdDateFrom = classListsPostedDate( $createdDateFrom );
     $hasPost = true;
 }
 
@@ -105,8 +126,7 @@ if ( isset( $Params['createdDateTo'] ) && $Params['createdDateTo'] !== false )
 if ( $http->hasPostVariable( 'createdDateTo' ) )
 {
     $createdDateTo = $http->postVariable( 'createdDateTo' );
-    $createdDateTo = DateTime::createFromFormat('Y-m-d H:i', $createdDateTo . ' 00:00');
-    $createdDateTo = $createdDateTo->getTimestamp();
+    $createdDateTo = classListsPostedDate( $createdDateTo );
     $hasPost = true;
 }
 
@@ -118,8 +138,7 @@ if ( isset( $Params['modifiedDateFrom'] ) && $Params['modifiedDateFrom'] !== fal
 if ( $http->hasPostVariable( 'modifiedDateFrom' ) )
 {
     $modifiedDateFrom = $http->postVariable( 'modifiedDateFrom' );
-    $modifiedDateFrom = DateTime::createFromFormat('Y-m-d H:i', $modifiedDateFrom . ' 00:00');
-    $modifiedDateFrom = $modifiedDateFrom->getTimestamp();
+    $modifiedDateFrom = classListsPostedDate( $modifiedDateFrom );
     $hasPost = true;
 }
 
@@ -131,8 +150,7 @@ if ( isset( $Params['modifiedDateTo'] ) && $Params['modifiedDateTo'] !== false )
 if ( $http->hasPostVariable( 'modifiedDateTo' ) )
 {
     $modifiedDateTo = $http->postVariable( 'modifiedDateTo' );
-    $modifiedDateTo = DateTime::createFromFormat('Y-m-d H:i', $modifiedDateTo . ' 00:00');
-    $modifiedDateTo = $modifiedDateTo->getTimestamp();
+    $modifiedDateTo = classListsPostedDate( $modifiedDateTo );
     $hasPost = true;
 }
 

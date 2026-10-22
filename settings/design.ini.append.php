@@ -8,7 +8,6 @@
 DesignExtensions[]=ezclasslists
 
 [JavaScriptSettings]
-BackendJavaScriptList[]=ezjsc::yui2
 BackendJavaScriptList[]=classlists.js
 
 */ ?>
