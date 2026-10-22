@@ -4,6 +4,8 @@ class classlistsFunctionCollection
 {
     public static function fetchClassListInSubtree($parentId)
     {
+        // The node id comes from the request (the subtree filter): only a number may reach the SQL.
+        $parentId = (int)$parentId;
         $db = eZDB::instance();
 
         $query = 'SELECT COUNT(*) as count, ezcontentclass.identifier as class_identifier, ezcontentclass.id as class_id 
