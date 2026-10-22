@@ -116,7 +116,7 @@
             {foreach $matched_classes as $class_data array( 'bgdark', 'bglight' ) as $style}
                 <tr class="{$style}">
                     <td class="class">
-                        <a href={concat( 'classlists/list/', $$class_data.class_identifier, $viewParametersString)|ezurl()}>{$class_data.class_identifier|wash()}</a>
+                        <a href={concat( 'classlists/list/', $class_data.class_identifier, $viewParametersString)|ezurl()}>{$class_data.class_identifier|wash()}</a>
                     </td>
                     <td class="count">
                         {$class_data.count}
