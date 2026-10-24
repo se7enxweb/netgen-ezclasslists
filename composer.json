@@ -40,8 +40,14 @@
         "php": ">=8.0",
         "se7enxweb/exponential-legacy-installer": "*"
     },
+    "replace": {
+        "netgen/ezclasslists": "self.version"
+    },
     "extra": {
         "ezpublish-legacy-extension-name": "ezclasslists",
-        "installer-name": "ezclasslists"
+        "installer-name": "ezclasslists",
+        "branch-alias": {
+            "dev-master": "2.1.x-dev"
+        }
     }
 }
