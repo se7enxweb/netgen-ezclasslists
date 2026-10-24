@@ -15,18 +15,15 @@
 
 <div class="box-bc"><div class="box-ml"><div class="box-mr"><div class="box-bl"><div class="box-br"><div class="box-content">
 
-    {def $root_node_id = '1'}
-    {if not($view_parameters.rootNodeId|eq(null))}
+    {* The subtree: one chosen in the browse page (posted), else the view parameter, else the root *}
+    {def $root_node_id = '1'
+         $root_node = false()}
+    {if ezhttp_hasvariable( 'SelectedNodeIDArray', 'POST' )}
+        {set $root_node_id = ezhttp( 'SelectedNodeIDArray', 'POST' ).0}
+    {elseif not( $view_parameters.rootNodeId|eq( null ) )}
         {set $root_node_id = $view_parameters.rootNodeId}
-
-        {def $root_node = fetch(content, node, hash(node_id, $root_node_id ) )}
-
-    {if ezhttp( 'SelectedNodeIDArray', 'POST' )}
-        {set $root_node_id = ezhttp( 'SelectedNodeIDArray', 'POST' )}
-        {set $root_node_id = $root_node_id[0]}
-
-        {def $root_node = fetch(content, node, hash(node_id, $root_node_id ) )}
     {/if}
+    {set $root_node = fetch( content, node, hash( node_id, $root_node_id ) )}
 
     <form method="post" action={'/content/action'|ezurl()} id="move">
         {if $root_node}
