@@ -4,6 +4,25 @@ Lists by class (ezclasslists) changelog
 The changes of each release, newest first. Earlier releases are described by their tags
 (https://github.com/se7enxweb/netgen-ezclasslists/tags).
 
+2.1.2 (2026-10-24)
+------------------
+
+- Updated: composer.json replaces netgen/ezclasslists. Both packages install into
+  extension/ezclasslists, and Netgen's 2.1.0 still asks the admin for `ezjsc::yui2`, which
+  Exponential 6 no longer has: every admin page logged "Could not find function:
+  ezjscServerFunctionsJs::yui2()" and the filter form stopped at "YUILoader is not defined". A
+  project that requires this package next to one that requires netgen/ezclasslists ^2.1
+  (site-legacy-bundle does) now installs this package once. The filter form needs no script
+  library: it uses fetch, and jQuery UI's date picker when the admin has loaded it, so it works on
+  every kernel, with or without YUI.
+- Updated: dev-master is aliased to 2.1.x-dev.
+- Fixed: list.tpl gives the rows' alternating styles with `sequence`; the old
+  `array( ... ) as $style` form logged "Unknown parameter 'as'" and "No variable name found" on
+  every request of the tab.
+- Fixed: menu.tpl reads the subtree chosen in the browse page only when it was posted (no
+  "Unknown post variable 'SelectedNodeIDArray'" error on every request), closes its condition and
+  takes the first selected node with `.0`.
+
 2.1.1 (2026-10-21)
 ------------------
 
