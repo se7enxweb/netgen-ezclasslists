@@ -29,7 +29,7 @@ class ezclasslistsInfo
     {
         return array(
             'Name'      => '<a href="https://github.com/se7enxweb/netgen-ezclasslists">Lists by class</a> (ezclasslists)',
-            'Version'   => '2.1.2',
+            'Version'   => '2.1.3',
             'Author'    => 'Damien Pobel, Netgen and 7x',
             'Copyright' => 'Copyright &copy; 1999 - 2011 Damien Pobel and 1998 - ' . date( 'Y' ) . ' 7x',
             'License'   => 'GNU General Public License v2.0',
